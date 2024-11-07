@@ -30,7 +30,7 @@ public class Minesweeper {
   // | Fields |
   // +--------+
   private MatrixV0<Integer> grid;
-  private MatrixV0<Boolean> reveled;
+  private MatrixV0<Boolean> revealed;
   private MatrixV0<Boolean> flagged;
   private int rows;
   private int column;
@@ -74,7 +74,7 @@ public class Minesweeper {
     }
 
     this.grid = new MatrixV0<>(this.column, this.rows);
-    this.reveled = new MatrixV0<>(this.column, this.rows, false);
+    this.revealed = new MatrixV0<>(this.column, this.rows, false);
     this.flagged = new MatrixV0<>(this.column, this.rows, false);
 
     placeMines();
@@ -122,8 +122,8 @@ public class Minesweeper {
     while (minesPlaced < this.totalMines) {
       int x = rand.nextInt(this.column);
       int y = rand.nextInt(this.rows);
-      if (this.grid.get(x, y) != BOMB) {
-        this.grid.set(x, y, BOMB);
+      if (this.grid.get(y, x) != BOMB) {
+        this.grid.set(y, x, BOMB);
         ++minesPlaced;
       } // if(the position in the grid doesn't equal -1)
     } // while(the cound of the placed mines doesn't equal to the count of the total Mines allowed)
@@ -138,14 +138,70 @@ public class Minesweeper {
   /**
    * When a cell is clicked, the game reveals the cell and, if necessary, recursively reveals
    * adjacent empty cells (cells with 0 adjacent mines).
+   * @param y int(row)
+   * @param x int(col)
+   * @param pen Printer Object
    */
-  public void revelingCell() {} // revelingCell()
+  public void revealingCell(int y, int x, PrintWriter pen) {
+    if (this.revealed.get(y, x)) {
+      return; // cant revel already reveled cell
+    }
 
-  /** This allows the player to flag a cell, potentially indicating that it contains a mine */
-  public void flaggedCell() {} // flaggedCell()
+    this.revealed.set(y, x, true);
+
+    // if revealed cell is a BOMB, restart the game
+    if (this.grid.get(y, x) == BOMB) {
+      pen.println("Looser! You hit the mine!");
+      resetGame();
+      return;
+    }
+    // If the cell is empty (0 adjacent mines), recursively reveal adjacent cells
+    if (this.grid.get(y, x) == EMPTY_CELL) {
+      for (int i = -1; i <= 1; i++) {
+        for (int j = -1; j <= 1; j++) {
+          revealingCell(y + i, x + j, pen);
+        }
+      }
+    }
+  } // revealingCell()
+
+  /**
+   * This allows the player to flag a cell, potentially indicating that it contains a mine
+   *
+   * @param x int(col)
+   * @param y int(row)
+   */
+  public void flagCell(int y, int x) {
+    if (this.revealed.get(y, x)) {
+      return; // can't flag already uncovered cell
+    }
+    this.flagged.set(y, x, true);
+  } // flagCell(int, int)
+
+  /**
+   * This allows the player to flag a cell, potentially indicating that it contains a mine
+   *
+   * @param x int(col)
+   * @param y int(row)
+   */
+  public void unFlagCell(int y, int x) {
+    if (!this.flagged.get(y, x) || this.revealed.get(y, x)) {
+      return; // can't unflag already uncovered cell or cell that is not flagged
+    }
+    this.flagged.set(y, x, false);
+  } // unFlagCell(int, int)
 
   /** The game checks if all non-mine cells are revealed, in which case the player wins. */
-  public void checkWin() {} // checkWin()
+  public boolean checkWin() {
+    for (int i = 0; i < this.rows; i++) {
+      for (int j = 0; i < this.column; j++) {
+        if (this.grid.get(i, j) != BOMB && !this.revealed.get(i, j)) {
+          return false;
+        } // if found unreveled bomb
+      } // inner for loop
+    } // outer for loop
+    return true;
+  } // checkWin()
 
   /** Resets the game */
   public void resetGame() {} // resetGame()
