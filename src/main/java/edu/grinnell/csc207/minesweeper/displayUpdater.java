@@ -234,12 +234,12 @@ public class displayUpdater {
     AsciiBlock rowAsciiRef = new VComp(HAlignment.CENTER, rowReference);
     AsciiBlock asciiDisplay = new Boxed(new  VComp(HAlignment.CENTER, rows));
     // make ascii blocks of the whole array stacked up as well as references to look up respective numbers
-    AsciiBlock[] verticalComposition = {colAsciiRef, asciiDisplay};
-    asciiDisplay = new VComp(HAlignment.CENTER, verticalComposition);
-    //add the column reference at the top of the ascii block
-    AsciiBlock[] HComposition = {rowAsciiRef, asciiDisplay};
-    asciiDisplay = new HComp(VAlignment.CENTER, HComposition);
-    // add the line reference to the left of the display
+    // AsciiBlock[] verticalComposition = {colAsciiRef, asciiDisplay};
+    // asciiDisplay = new VComp(HAlignment.CENTER, verticalComposition);
+    // //add the column reference at the top of the ascii block
+    // AsciiBlock[] HComposition = {rowAsciiRef, asciiDisplay};
+    // asciiDisplay = new HComp(VAlignment.CENTER, HComposition);
+    // // add the line reference to the left of the display
 
     PrintWriter pen = new PrintWriter(System.out, true);
 
