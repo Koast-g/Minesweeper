@@ -1,4 +1,4 @@
-package edu.grinnell.csc207.minesweeper;
+package edu.grinnell.csc207.sample;
 
 import edu.grinnell.csc207.util.ArrayUtils;
 import edu.grinnell.csc207.util.IOUtils;
@@ -22,26 +22,21 @@ public class Board{
     //Expect Medium: 14x18 with 40 mines
   public void initializeBoard(int w, int h){
 
-    matrix = new MatrixV0<>(w,h,0);
+    matrix = new MatrixV0<Integer>(h,w,Integer.valueOf(0));
 
-    for(int i = 0; i<w; i++){
-      for(int j = 0; j<h; j++){
-        matrix.set(i,j,0);
-      }
-    }
   }
 
   public int mineCounter(int r, int c){
     int count = 0;
     
-    if(matrix.get(r,c)==-1){
+    if(matrix.get(r,c).intValue()==-1){
       return -1;
     }
 
     for(int i = r-1; i<=r+1; i++){
       for(int j = c-1; j<=c+1; j++){
-        if(!(i<0 || j<0 || i>=matrix.width() || j>=matrix.height())){
-          if(matrix.get(i,j)==-1){
+        if(!(i<0 || j<0 || i>=matrix.height() || j>=matrix.width())){
+          if(matrix.get(i,j).intValue()==-1){
             count++;
           }
         }
@@ -57,21 +52,25 @@ public class Board{
 
   public Board(int w, int h, int mines){
 
-    initializeBoard(w, h);
+    initializeBoard(h, w);
         
     while(mines != 0){
-      int r = (int)(Math.random() * w);
-      int c = (int)(Math.random() * h);
+      int r = (int)(Math.random() * h);
+      int c = (int)(Math.random() * w);
+      System.out.printf("%d:%d\n", r,c);
 
-      if(matrix.get(r,c)!=-1){
+      if(matrix.get(r,c).intValue()!=-1){
         mines--;
-        matrix.set(r,c,-1);
+        System.out.printf("%d\n", mines);
+        matrix.set(r,c,Integer.valueOf(-1));
+        
       }
     }
+    System.out.printf("Made it out\n");
 
-    for(int i = 0; i<w; i++){
-      for(int j = 0; j<h; j++){
-        matrix.set(i,j, mineCounter(i,j));
+    for(int i = 0; i<h; i++){
+      for(int j = 0; j<w; j++){
+        matrix.set(i,j, Integer.valueOf(mineCounter(i,j)));
       }
     }
   }
@@ -83,4 +82,5 @@ public class Board{
     Board minesweeper = new Board(14,18,40);
     Matrix.print(pen,minesweeper.matrix);
   }
+  
 }
