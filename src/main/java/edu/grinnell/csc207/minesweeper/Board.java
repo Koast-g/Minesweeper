@@ -17,13 +17,11 @@ import java.util.Random;
 
 public class Board{
     
-    private Matrix <Integer> matrix;
+  private Matrix <Integer> matrix;
 
-    //Expect Medium: 14x18 with 40 mines
+  
   public void initializeBoard(int w, int h){
-
     matrix = new MatrixV0<Integer>(h,w,Integer.valueOf(0));
-
   }
 
   public int mineCounter(int r, int c){
@@ -45,6 +43,12 @@ public class Board{
 
     return count;
   }
+
+
+  public Matrix <Integer> getMatrix(){
+    return this.matrix;
+  }
+
 
   public Board(int w, int h, int mines){
 
@@ -76,9 +80,9 @@ public class Board{
   public static void main(String[] args){
     PrintWriter pen = new PrintWriter(System.out, true);
     Board minesweeper = new Board(14,18,40);
-    Matrix.print(pen,minesweeper.matrix);
+    Matrix.print(pen,minesweeper.getMatrix());
 
-    displayUpdater display = new displayUpdater(minesweeper.matrix);
+    displayUpdater display = new displayUpdater(minesweeper.getMatrix());
     display.print();
   }
   
