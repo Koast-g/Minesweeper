@@ -1,5 +1,6 @@
 package edu.grinnell.csc207.sample;
 
+import edu.grinnell.csc207.util.MatrixV0;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -18,12 +19,12 @@ public class Minesweeper {
   /** The default width and height of the hard mode game. */
   static final int HARD_MODE = 24;
 
-  // +-------+---------------------------------------------------
-  // | Fields|
-  // +-------+
-  private int[][] grid;
-  private boolean[][] reveled;
-  private boolean[][] flagged;
+  // +--------+---------------------------------------------------
+  // | Fields |
+  // +--------+
+  private MatrixV0<Integer> grid;
+  private MatrixV0<Boolean> reveled;
+  private MatrixV0<Boolean> flagged;
   private int rows;
   private int column;
   private int minesPlaced;
@@ -65,9 +66,9 @@ public class Minesweeper {
         break;
     }
 
-    this.grid = new int[rows][column];
-    this.reveled = new boolean[rows][column];
-    this.flagged = new boolean[rows][column];
+    this.grid = new MatrixV0<>(this.column, this.rows);
+    this.reveled = new MatrixV0<>(this.column, this.rows, false);
+    this.flagged = new MatrixV0<>(this.column, this.rows, false);
 
     placeMines();
     calculateAdjacentMines();
