@@ -4,6 +4,7 @@ import edu.grinnell.csc207.util.MatrixV0;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.util.Random;
 
 public class Minesweeper {
   // +-----------+---------------------------------------------------
@@ -19,6 +20,12 @@ public class Minesweeper {
   /** The default width and height of the hard mode game. */
   static final int HARD_MODE = 24;
 
+  /** Code for a bomb */
+  static final int BOMB = -1;
+
+  /** Code for an empty cell */
+  static final int EMPTY_CELL = 0;
+
   // +--------+---------------------------------------------------
   // | Fields |
   // +--------+
@@ -27,7 +34,7 @@ public class Minesweeper {
   private MatrixV0<Boolean> flagged;
   private int rows;
   private int column;
-  private int minesPlaced;
+  private int totalMines;
   private String mode;
 
   // +-------------+---------------------------------------------------
@@ -46,23 +53,23 @@ public class Minesweeper {
       case "Easy":
         this.column = EASY_MODE;
         this.rows = EASY_MODE;
-        this.minesPlaced = EASY_MODE * EASY_MODE / 8;
+        this.totalMines = EASY_MODE * EASY_MODE / 8;
         break;
       case "Medium":
         this.column = MEDIUM_MODE;
         this.rows = MEDIUM_MODE;
-        this.minesPlaced = MEDIUM_MODE * MEDIUM_MODE / 6;
+        this.totalMines = MEDIUM_MODE * MEDIUM_MODE / 6;
         break;
       case "Hard":
         this.column = HARD_MODE;
         this.rows = HARD_MODE;
-        this.minesPlaced = HARD_MODE * HARD_MODE / 4;
+        this.totalMines = HARD_MODE * HARD_MODE / 4;
         break;
       default:
         System.out.println("Invalid input, setting to a default easy mode");
         this.column = EASY_MODE;
         this.rows = EASY_MODE;
-        this.minesPlaced = EASY_MODE * EASY_MODE / 8;
+        this.totalMines = EASY_MODE * EASY_MODE / 8;
         break;
     }
 
@@ -91,13 +98,11 @@ public class Minesweeper {
 
         Selecting difficulty of the game:
 
-        * -E easy - creates a 10 by 10 board
-        * -M medium - creates a 40 by 40 board
-        * -H hard - creates a 100 by 100 board
+        * Easy - creates a 8 by 8 board
+        * Medium - creates a 16 by 16 board
+        * Hard - creates a 24 by 24 board
 
         Your goal is to flag all the possible mines on the field.
-
-
 
         * flag key*: puts a flag on the field(possible mine)
         * reset: resets the game
@@ -110,7 +115,19 @@ public class Minesweeper {
    * Randomly places mines on the grid by selecting random coordinates and ensuring that no two
    * mines are placed at the same position.
    */
-  public void placeMines() {} // placeMines()
+  public void placeMines() {
+    Random rand = new Random();
+    int minesPlaced = 0;
+
+    while (minesPlaced < this.totalMines) {
+      int x = rand.nextInt(this.column);
+      int y = rand.nextInt(this.rows);
+      if (this.grid.get(x, y) != BOMB) {
+        this.grid.set(x, y, BOMB);
+        ++minesPlaced;
+      } // if(the position in the grid doesn't equal -1)
+    } // while(the cound of the placed mines doesn't equal to the count of the total Mines allowed)
+  } // placeMines()
 
   /**
    * For each non-mine cell, it calculates how many of the adjacent cells contain mines and stores
@@ -129,6 +146,9 @@ public class Minesweeper {
 
   /** The game checks if all non-mine cells are revealed, in which case the player wins. */
   public void checkWin() {} // checkWin()
+
+  /** Resets the game */
+  public void resetGame() {} // resetGame()
 
   // +------+--------------------------------------------------------
   // | Main |
