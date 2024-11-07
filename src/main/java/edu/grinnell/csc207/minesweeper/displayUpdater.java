@@ -205,16 +205,16 @@ public class displayUpdater {
           space = new Line("O");
         }// if a mine is found set the space as the given charachter
     
-        if (value == displayVals.FLAG) {
+        else if (value == displayVals.FLAG) {
           space = new Line("!");
         }//if a flag is found add an exclamation point
     
 
-        if (value == displayVals.UNCHECKED) {
+        else if (value == displayVals.UNCHECKED) {
           space = new Line("X");
         }  // unchecked values are X
 
-        if (value == displayVals.NUMBER) {
+        else if (value == displayVals.NUMBER) {
           space = new Line(this.reference.get(row,col).toString());
         }  // if a number is found look up the respective numver and cast it as a string
 
