@@ -1,6 +1,6 @@
 package edu.grinnell.csc207.sample;
 
-import edu.grinnell.csc207.minesweeper.displayUpdater;
+//import edu.grinnell.csc207.minesweeper.displayUpdater;
 import edu.grinnell.csc207.util.ArrayUtils;
 import edu.grinnell.csc207.util.IOUtils;
 import edu.grinnell.csc207.util.Matrix;
@@ -79,17 +79,17 @@ public class Board {
     Board minesweeper = new Board(14, 18, 40);
 
 
-    displayUpdater display = new displayUpdater(minesweeper.matrix);
-    display.print();
+    // displayUpdater display = new displayUpdater(minesweeper.matrix);
+    // display.print();
 
-    display.flag(1, 'd');
+    // display.flag(1, 'd');
 
-    display.checkIndex(1, 'c');
-    display.checkIndex(10, 'c');
+    // display.checkIndex(1, 'c');
+    // display.checkIndex(10, 'c');
 
-    display.print();
+    // display.print();
 
-    display.checkIndex(5, 'c');
+    // display.checkIndex(5, 'c');
 
   }
 

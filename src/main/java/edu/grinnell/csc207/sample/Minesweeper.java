@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.Random;
 
+/** This is a one player game Minesweeper. Try to escape the mine field in order to survive. */
 public class Minesweeper {
   // +-----------+---------------------------------------------------
   // | Constants |
@@ -20,21 +21,40 @@ public class Minesweeper {
   /** The default width and height of the hard mode game. */
   static final int HARD_MODE = 24;
 
-  /** Code for a bomb */
+  /** Code for a bomb. */
   static final int BOMB = -1;
 
-  /** Code for an empty cell */
+  /** Code for an empty cell. */
   static final int EMPTY_CELL = 0;
 
   // +--------+---------------------------------------------------
   // | Fields |
   // +--------+
+  /**
+   * Creates a grid of integers, where -1 is a bomb, 0 is empty cell and positive integer repressents how many bombs are there.
+   */
   private MatrixV0<Integer> grid;
+  /**Revealed cells. */
   private MatrixV0<Boolean> revealed;
+  /**
+   * Flagged cells.
+   */
   private MatrixV0<Boolean> flagged;
+  /**
+   * Number of rows in matrics.
+   */
   private int rows;
+  /**
+   * Number of columns in matrics
+   */
   private int column;
+  /**
+   * Total number of mines on the field
+   */
   private int totalMines;
+  /**
+   * Difficulty level
+   */
   private String mode;
 
   // +-------------+---------------------------------------------------
@@ -71,7 +91,7 @@ public class Minesweeper {
         this.rows = EASY_MODE;
         this.totalMines = EASY_MODE * EASY_MODE / 8;
         break;
-    }
+    } // switch
 
     this.grid = new MatrixV0<>(this.column, this.rows, 0);
     this.revealed = new MatrixV0<>(this.column, this.rows, false);
@@ -79,7 +99,7 @@ public class Minesweeper {
 
     placeMines();
     calculateAdjacentMines();
-  }
+  } // Minesweeper(String)
 
   // +----------------+----------------------------------------------
   // | Helper methods |
@@ -109,7 +129,24 @@ public class Minesweeper {
         * unflag x y: puts a flag on the field(possible mine)
         * reset: resets the game
         * reveal x y: uncvovers the hidden feild
+        * end : ends the game
+        """);
+  } // printInstructions(PrintWriter)
 
+  /**
+   * rettuns available commands.
+   *
+   * @param pen Writer object
+   */
+  public static void availableCommands(PrintWriter pen) {
+    pen.println(
+        """
+        Please enter one of the available commands
+        Y representing the row and X a column
+        * flag x y: puts a flag on the field(possible mine)
+        * unflag x y: puts a flag on the field
+        * reset: resets the game
+        * reveal x y: uncvovers the hidden feild
         """);
   } // printInstructions(PrintWriter)
 
@@ -146,19 +183,19 @@ public class Minesweeper {
         for (int m = -1; m <= 1; m++) {
           for (int n = -1; n <= 1; n++) {
             int mRow = i + m;
-            int nCol = j + n;
+            int nRow = j + n;
             if (mRow >= 0
-                && nCol >= 0
+                && nRow >= 0
                 && mRow < this.rows
-                && nCol < this.column
-                && this.grid.get(mRow, nCol) == BOMB) {
+                && nRow < this.column
+                && this.grid.get(mRow, nRow) == BOMB) {
               mineCount++;
-            } //
-          } //
-        } //
+            } // if
+          } // inner for loop
+        } // outer for loop
         this.grid.set(i, j, mineCount); // Store the count of adjacent mines
-      } //
-    } //
+      } // inner for loop(looping through columns)
+    } // outer for loop
   } // calculateAdjacentMines()
 
   /**
@@ -172,28 +209,31 @@ public class Minesweeper {
   public void revealingCell(int y, int x, PrintWriter pen) {
     if (this.revealed.get(y, x)) {
       return; // cant revel already reveled cell
-    } //
+    } // if
 
     this.revealed.set(y, x, true);
 
     // if revealed cell is a BOMB, restart the game
     if (this.grid.get(y, x) == BOMB) {
-      pen.println("Looser! You hit the mine!");
+      pen.println("Loser! You hit the mine!");
       resetGame();
       return;
-    } //
-    // If the cell is empty (0 adjacent mines), recursively reveal adjacent cells
+    } // if
+
+    // If the cell is empty, recursively revealing adjacent cells
     if (this.grid.get(y, x) == EMPTY_CELL) {
       for (int i = -1; i <= 1; i++) {
         for (int j = -1; j <= 1; j++) {
-          revealingCell(y + i, x + j, pen);
-        } //
-      } //
-    } //
+          if (y + i >= 0 && y + i < this.rows && x + j >= 0 && x + j < this.column) {
+            revealingCell(y + i, x + j, pen);
+          }
+        } // inner for loop
+      } // outer for loop
+    } // if
   } // revealingCell()
 
   /**
-   * This allows the player to flag a cell, potentially indicating that it contains a mine
+   * This allows the player to flag a cell, potentially indicating that it contains a mine.
    *
    * @param x int(col)
    * @param y int(row)
@@ -201,12 +241,12 @@ public class Minesweeper {
   public void flagCell(int y, int x) {
     if (this.revealed.get(y, x)) {
       return; // can't flag already uncovered cell
-    } //
+    } // if
     this.flagged.set(y, x, true);
   } // flagCell(int, int)
 
   /**
-   * This allows the player to flag a cell, potentially indicating that it contains a mine
+   * This allows the player to flag a cell, potentially indicating that it contains a mine.
    *
    * @param x int(col)
    * @param y int(row)
@@ -214,7 +254,7 @@ public class Minesweeper {
   public void unFlagCell(int y, int x) {
     if (!this.flagged.get(y, x) || this.revealed.get(y, x)) {
       return; // can't unflag already uncovered cell or cell that is not flagged
-    }
+    } // if
     this.flagged.set(y, x, false);
   } // unFlagCell(int, int)
 
@@ -230,7 +270,7 @@ public class Minesweeper {
     return true;
   } // checkWin()
 
-  /** Resets the game */
+  /** Resets the game. */
   public void resetGame() {
     this.grid = new MatrixV0<>(this.column, this.rows, 0);
     this.revealed = new MatrixV0<>(this.column, this.rows, false);
@@ -238,6 +278,28 @@ public class Minesweeper {
     placeMines();
     calculateAdjacentMines();
   } // resetGame()
+
+  /**
+   * Displays the mine field. H is hidden values, and F if the cells is flagged
+   */
+  public void displayGrid() {
+    for (int i = 0; i < this.rows; i++) {
+      for (int j = 0; j < this.column; j++) {
+        if (this.revealed.get(i, j)) {
+          if (this.grid.get(i, j) == BOMB) {
+            System.out.print("X "); // Represent mine with "X"
+          } else {
+            System.out.print(this.grid.get(i, j) + " "); // Show adjacent mine count
+          } // if
+        } else if (this.flagged.get(i, j)) {
+          System.out.print("F "); // Flagged cell
+        } else {
+          System.out.print("H "); // Hidden cell
+        } // if
+      } // inner for loop
+      System.out.println();
+    } // outer for loop
+  }
 
   // +------+--------------------------------------------------------
   // | Main |
@@ -251,5 +313,61 @@ public class Minesweeper {
   public static void main(String[] args) {
     PrintWriter pen = new PrintWriter(System.out, true);
     BufferedReader eyes = new BufferedReader(new InputStreamReader(System.in));
-  }
-}
+
+    printInstructions(pen);
+    pen.println("Please proveide the level of the game:");
+    String mode = "";
+    try {
+      mode = eyes.readLine().trim();
+    } catch (Exception e) {
+      // do nothing
+    } // try/catch
+
+    if (!mode.equals("Easy") && !mode.equals("Medium") && !mode.equals("Hard")) {
+      pen.println("Invalid input selected! Easy mode selected automatically!");
+      mode = "Easy";
+    } // if
+
+    Minesweeper game = new Minesweeper(mode);
+
+    while (!game.checkWin()) {
+      game.displayGrid(); // Display the grid before the move
+      pen.println("Enter command: ");
+      String command = "";
+      try {
+        command = eyes.readLine().trim();
+      } catch (Exception e) {
+        // do nothing
+      } // try/catch
+
+      String[] parts = command.split(" ");
+      if (parts.length < 3) continue;
+
+      String action = parts[0];
+      int x = Integer.parseInt(parts[1]);
+      int y = Integer.parseInt(parts[2]);
+
+      switch (action.toLowerCase()) {
+        case "flag":
+          game.flagCell(y, x);
+          break;
+        case "unflag":
+          game.unFlagCell(y, x);
+          break;
+        case "reveal":
+          game.revealingCell(y, x, pen);
+          break;
+        case "reset":
+          game.resetGame();
+          break;
+        case "end":
+          return;
+        default:
+          System.out.println("Invalid command. Try again!");
+          break;
+      } // switch
+    } // while
+
+    System.out.println("You win!");
+  } // main(String[])
+} // Minesweeper
