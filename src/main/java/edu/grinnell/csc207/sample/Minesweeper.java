@@ -73,7 +73,7 @@ public class Minesweeper {
         break;
     }
 
-    this.grid = new MatrixV0<>(this.column, this.rows);
+    this.grid = new MatrixV0<>(this.column, this.rows, 0);
     this.revealed = new MatrixV0<>(this.column, this.rows, false);
     this.flagged = new MatrixV0<>(this.column, this.rows, false);
 
@@ -103,10 +103,12 @@ public class Minesweeper {
         * Hard - creates a 24 by 24 board
 
         Your goal is to flag all the possible mines on the field.
+        Y representing the row number and X a column
 
-        * flag key*: puts a flag on the field(possible mine)
+        * flag x y: puts a flag on the field(possible mine)
+        * unflag x y: puts a flag on the field(possible mine)
         * reset: resets the game
-        * uncover key*: uncvovers the hidden feild
+        * reveal x y: uncvovers the hidden feild
 
         """);
   } // printInstructions(PrintWriter)
@@ -133,11 +135,36 @@ public class Minesweeper {
    * For each non-mine cell, it calculates how many of the adjacent cells contain mines and stores
    * this count in the grid.
    */
-  public void calculateAdjacentMines() {} // calculateAdjacentMines()
+  public void calculateAdjacentMines() {
+    for (int i = 0; i < this.rows; i++) {
+      for (int j = 0; j < this.column; j++) {
+        if (this.grid.get(i, j) == BOMB) {
+          continue; // Skip mines
+        }
+        int mineCount = 0;
+        // Check all adjacent cells (8 directions)
+        for (int m = -1; m <= 1; m++) {
+          for (int n = -1; n <= 1; n++) {
+            int mRow = i + m;
+            int nCol = j + n;
+            if (mRow >= 0
+                && nCol >= 0
+                && mRow < this.rows
+                && nCol < this.column
+                && this.grid.get(mRow, nCol) == BOMB) {
+              mineCount++;
+            } //
+          } //
+        } //
+        this.grid.set(i, j, mineCount); // Store the count of adjacent mines
+      } //
+    } //
+  } // calculateAdjacentMines()
 
   /**
    * When a cell is clicked, the game reveals the cell and, if necessary, recursively reveals
    * adjacent empty cells (cells with 0 adjacent mines).
+   *
    * @param y int(row)
    * @param x int(col)
    * @param pen Printer Object
@@ -145,7 +172,7 @@ public class Minesweeper {
   public void revealingCell(int y, int x, PrintWriter pen) {
     if (this.revealed.get(y, x)) {
       return; // cant revel already reveled cell
-    }
+    } //
 
     this.revealed.set(y, x, true);
 
@@ -154,15 +181,15 @@ public class Minesweeper {
       pen.println("Looser! You hit the mine!");
       resetGame();
       return;
-    }
+    } //
     // If the cell is empty (0 adjacent mines), recursively reveal adjacent cells
     if (this.grid.get(y, x) == EMPTY_CELL) {
       for (int i = -1; i <= 1; i++) {
         for (int j = -1; j <= 1; j++) {
           revealingCell(y + i, x + j, pen);
-        }
-      }
-    }
+        } //
+      } //
+    } //
   } // revealingCell()
 
   /**
@@ -174,7 +201,7 @@ public class Minesweeper {
   public void flagCell(int y, int x) {
     if (this.revealed.get(y, x)) {
       return; // can't flag already uncovered cell
-    }
+    } //
     this.flagged.set(y, x, true);
   } // flagCell(int, int)
 
@@ -194,7 +221,7 @@ public class Minesweeper {
   /** The game checks if all non-mine cells are revealed, in which case the player wins. */
   public boolean checkWin() {
     for (int i = 0; i < this.rows; i++) {
-      for (int j = 0; i < this.column; j++) {
+      for (int j = 0; j < this.column; j++) {
         if (this.grid.get(i, j) != BOMB && !this.revealed.get(i, j)) {
           return false;
         } // if found unreveled bomb
@@ -204,7 +231,13 @@ public class Minesweeper {
   } // checkWin()
 
   /** Resets the game */
-  public void resetGame() {} // resetGame()
+  public void resetGame() {
+    this.grid = new MatrixV0<>(this.column, this.rows, 0);
+    this.revealed = new MatrixV0<>(this.column, this.rows, false);
+    this.flagged = new MatrixV0<>(this.column, this.rows, false);
+    placeMines();
+    calculateAdjacentMines();
+  } // resetGame()
 
   // +------+--------------------------------------------------------
   // | Main |
