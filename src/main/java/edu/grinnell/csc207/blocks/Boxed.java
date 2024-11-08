@@ -119,3 +119,4 @@ public class Boxed implements AsciiBlock {
     return this.contents.eqv(other.contents);
   } // eqv(Boxed)
 } // class Boxed
+

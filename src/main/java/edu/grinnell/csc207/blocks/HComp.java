@@ -9,15 +9,17 @@ import java.util.Arrays;
  * @author Jana Vadillo
  */
 public class HComp implements AsciiBlock {
-
-    public enum VAlignment {
-        /** Align to the top. */
-        TOP,
-        /** Align to the center. */
-        CENTER,
-        /** Align to the bottom. */
-        BOTTOM
-      } // enum VAlignment
+/**
+ * Enum for keeping track of allignment.
+ */
+  public enum VAlignment {
+    /** Align to the top. */
+    TOP,
+    /** Align to the center. */
+    CENTER,
+    /** Align to the bottom. */
+    BOTTOM
+  } // enum VAlignment
   // +--------+------------------------------------------------------------
   // | Fields |
   // +--------+
@@ -187,3 +189,4 @@ public class HComp implements AsciiBlock {
     } // if
   } // eqv(HComp)
 } // classHcimo
+

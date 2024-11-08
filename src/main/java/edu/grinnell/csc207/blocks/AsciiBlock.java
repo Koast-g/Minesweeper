@@ -138,3 +138,4 @@ public interface AsciiBlock {
    */
   public boolean eqv(AsciiBlock other);
 } // interface AsciiBlock
+

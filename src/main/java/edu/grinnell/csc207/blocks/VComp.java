@@ -9,15 +9,17 @@ import java.util.Arrays;
  * @author Jana Vadillo
  */
 public class VComp implements AsciiBlock {
-
-    public enum HAlignment {
-        /** Align by the left column. */
-        LEFT,
-        /** Align by the center column. */
-        CENTER,
-        /** Align by the right column. */
-        RIGHT
-      };
+/**
+ * enum for keeping track of allignment.
+ */
+  public enum HAlignment {
+    /** Align by the left column. */
+    LEFT,
+    /** Align by the center column. */
+    CENTER,
+    /** Align by the right column. */
+    RIGHT
+  };
   // +--------+------------------------------------------------------------
   // | Fields |
   // +--------+
