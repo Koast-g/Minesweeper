@@ -109,19 +109,22 @@ public class displayUpdater {
    */
   private void updateEmpty(int r, int c){
     this.display.set(r,c,displayVals.EMPTY);
-    for (int row = -1; row < 2; row ++){
-      for (int col = -1; col < 2; row ++){
-        if ((row !=col) && (row!= 0)){
-          int checkRow = r +row;
-          int checkCol = c + col;
+    // for (int row = -1; row < 2; row ++){
+    //   for (int col = -1; col < 2; row ++){
+    //     if ((row !=col) && (row!= 0)){
+    //       int checkRow = r +row;
+    //       int checkCol = c + col;
 
-          if (this.inBounds(checkRow, checkCol)){
-            checkIndex(checkRow, checkCol);
-          }// check for the new slot being within the bounds of the matrix of a whole
-        }//check avoiding us re-doing the check on the central loop and starting the cycle over again
-      }//itterate through three columns
+    //       if ((this.inBounds(checkRow, checkCol)) && (this.display.get(checkRow, checkCol) == displayVals.UNCHECKED)){
+    //         this.print();
+    //         System.out.printf("%d %s \n", checkRow, checkCol);
+    //         checkIndex(checkRow, (char) (checkCol + (int) 'a'));
+            
+    //       }// check for the new slot being within the bounds of the matrix of a whole
+    //     }//check avoiding us re-doing the check on the central loop and starting the cycle over again
+    //   }//itterate through three columns
 
-    }//itterate through the three rows and later columns to check all available slots around an empty one 
+    // }//itterate through the three rows and later columns to check all available slots around an empty one 
     
   }//updateEmpty(int,int)
 
@@ -133,7 +136,7 @@ public class displayUpdater {
   private void updateMine(int r, int c){
     //STUB
     this.display.set(r,c,displayVals.MINE); // printing is done 
-    this.print();
+    // this.print();
     
     //Should simply call a function for the end of the game.
     
@@ -149,33 +152,37 @@ public class displayUpdater {
  * @param r the row in which to place down the flag
  * @param c the column in which to place down the flag
  */
-  public void Flag(int r, int c){
+  public void flag(int r, char col){
+    int c = (int) col - (int) 'a';
     if (this.display.get(r,c) == displayVals.UNCHECKED){
       this.display.set(r,c,displayVals.FLAG);
     }// check if it is currently a valid place to do place a flag, otherwise do nothing
-    print();
+    this.print();
   }//flag(int,int)
 /**
  * checks the given index for a mine
  * @param r row to check
  * @param c column to check
  */
-  public void checkIndex(int r, int c){
+  public void checkIndex(int r, char col){
+    int c = (int) col - (int) 'a';
     int value = this.reference.get(r,c).intValue();
+    if (this.display.get(r,c) == displayVals.UNCHECKED){
+      if (value == -1) {
+        this.updateMine(r,c);
+      }// runs function to update the position with a mine
+  
+      if (value == 0) {
+        this.updateEmpty(r, c);
+      } //runs function to update the empty position
+  
+      if (value > 0) {
+        this.updateNumber(r, c);
+      }// runs function to update nu,ber
+      
+    }
 
-    if (value == -1) {
-      this.updateMine(r,c);
-    }// runs function to update the position with a mine
 
-    if (value == 0) {
-      this.updateEmpty(r, c);
-    } //runs function to update the empty position
-
-    if (value > 0) {
-      this.updateNumber(r, c);
-    }// runs function to update nu,ber
-    
-    this.print();
 
   }//checkIndex(int,int)
 /**
@@ -186,11 +193,12 @@ public class displayUpdater {
     AsciiBlock[] rowReference = new AsciiBlock[height+3];
     rowReference[0] = new Line(" ");
     rowReference[1] = new Line(" ");
+    rowReference[height+2] = new Line(" ");
 
 
-    AsciiBlock[] colReference = new AsciiBlock[height+3];
+    AsciiBlock[] colReference = new AsciiBlock[width+2];
     colReference[0] = new Line(" ");
-    colReference[1] = new Line(" ");
+    colReference[width+1] = new Line(" ");
 
     //make a list of ascii blocks for the rows, the row reference (which will count up for the rows we have)  and the col ref
 
@@ -202,27 +210,33 @@ public class displayUpdater {
         displayVals value = this.display.get(row,col);
 
         if (value == displayVals.MINE) {
-          space = new Line("O");
+          space = new Line("X ");
         }// if a mine is found set the space as the given charachter
     
         else if (value == displayVals.FLAG) {
-          space = new Line("!");
+          space = new Line("! ");
         }//if a flag is found add an exclamation point
     
 
         else if (value == displayVals.UNCHECKED) {
-          space = new Line("X");
+          space = new Line(". ");
         }  // unchecked values are X
 
         else if (value == displayVals.NUMBER) {
-          space = new Line(this.reference.get(row,col).toString());
+          space = new Line(this.reference.get(row,col).toString() + " ");
         }  // if a number is found look up the respective numver and cast it as a string
 
-        else {
-          space = new Line(" ");
+        else if (value == displayVals.EMPTY){
+          space = new Line("  ");
         }// otherwise it must be an empty space, cast it as such
+        else{
+          space = new Line("e");
+          
+        }
         spaces[col] = space;
-        colReference[col+2] = new Line(Integer.toString(col)); // will this run more times than necesarry? perhaps, please forgive this minor overwriting
+
+        int column_letter =  col + (int)'a';
+        colReference[col+1] = new Line(String.valueOf((char) column_letter)+ " "); // will this run more times than necesarry? perhaps, please forgive this minor overwriting
       }//itterate through and set the corresponding spot in the line to the relative array value and update the column refreence
 
       AsciiBlock asciiRow = new HComp(VAlignment.CENTER, spaces);
@@ -230,22 +244,24 @@ public class displayUpdater {
 
       rowReference[row+2] = new Line(Integer.toString(row));
     }// much like above, take all of the leters in a single row and make them into a single ascii block adding them to the row array
+    
+    
     AsciiBlock colAsciiRef = new HComp(VAlignment.CENTER, colReference);
     AsciiBlock rowAsciiRef = new VComp(HAlignment.CENTER, rowReference);
     AsciiBlock asciiDisplay = new Boxed(new  VComp(HAlignment.CENTER, rows));
     // make ascii blocks of the whole array stacked up as well as references to look up respective numbers
-    // AsciiBlock[] verticalComposition = {colAsciiRef, asciiDisplay};
-    // asciiDisplay = new VComp(HAlignment.CENTER, verticalComposition);
-    // //add the column reference at the top of the ascii block
-    // AsciiBlock[] HComposition = {rowAsciiRef, asciiDisplay};
-    // asciiDisplay = new HComp(VAlignment.CENTER, HComposition);
-    // // add the line reference to the left of the display
+
+    AsciiBlock[] verticalComposition = {colAsciiRef, asciiDisplay};
+    asciiDisplay = new VComp(HAlignment.CENTER, verticalComposition);
+    //add the column reference at the top of the ascii block
+    AsciiBlock[] HComposition = {rowAsciiRef, asciiDisplay};
+    asciiDisplay = new HComp(VAlignment.CENTER, HComposition);
+    // add the line reference to the left of the display
 
     PrintWriter pen = new PrintWriter(System.out, true);
 
 
     AsciiBlock.print(pen,asciiDisplay);
-    pen.close();
     //finish up and print
 
     
