@@ -31,31 +31,28 @@ public class Minesweeper {
   // | Fields |
   // +--------+
   /**
-   * Creates a grid of integers, where -1 is a bomb, 0 is empty cell and positive integer repressents how many bombs are there.
+   * Creates a grid of integers, where -1 is a bomb, 0 is empty cell and positive integer
+   * repressents how many bombs are there.
    */
   private MatrixV0<Integer> grid;
-  /**Revealed cells. */
+
+  /** Revealed cells. */
   private MatrixV0<Boolean> revealed;
-  /**
-   * Flagged cells.
-   */
+
+  /** Flagged cells. */
   private MatrixV0<Boolean> flagged;
-  /**
-   * Number of rows in matrics.
-   */
+
+  /** Number of rows in matrics. */
   private int rows;
-  /**
-   * Number of columns in matrics
-   */
+
+  /** Number of columns in matrics. */
   private int column;
-  /**
-   * Total number of mines on the field
-   */
+
+  /** Total number of mines on the field. */
   private int totalMines;
-  /**
-   * Difficulty level
-   */
-  private String mode;
+
+  /** Difficulty level. */
+  private String gameMode;
 
   // +-------------+---------------------------------------------------
   // | Constructor |
@@ -68,25 +65,24 @@ public class Minesweeper {
    * @param mode string
    */
   public Minesweeper(String mode) {
-    this.mode = mode;
+    this.gameMode = mode;
     switch (mode) {
-      case "Easy":
+      case "easy":
         this.column = EASY_MODE;
         this.rows = EASY_MODE;
         this.totalMines = EASY_MODE * EASY_MODE / 8;
         break;
-      case "Medium":
+      case "medium":
         this.column = MEDIUM_MODE;
         this.rows = MEDIUM_MODE;
         this.totalMines = MEDIUM_MODE * MEDIUM_MODE / 6;
         break;
-      case "Hard":
+      case "hard":
         this.column = HARD_MODE;
         this.rows = HARD_MODE;
         this.totalMines = HARD_MODE * HARD_MODE / 4;
         break;
       default:
-        System.out.println("Invalid input, setting to a default easy mode");
         this.column = EASY_MODE;
         this.rows = EASY_MODE;
         this.totalMines = EASY_MODE * EASY_MODE / 8;
@@ -123,30 +119,12 @@ public class Minesweeper {
         * Hard - creates a 24 by 24 board
 
         Your goal is to flag all the possible mines on the field.
-        Y representing the row number and X a column
+        y representing the row number and X a column
 
-        * flag x y: puts a flag on the field(possible mine)
-        * unflag x y: puts a flag on the field(possible mine)
-        * reset: resets the game
-        * reveal x y: uncvovers the hidden feild
+        * flag y x: puts a flag on the field(possible mine)
+        * unflag yx: puts a flag on the field(possible mine)
+        * reveal yx: uncvovers the hidden feild
         * end : ends the game
-        """);
-  } // printInstructions(PrintWriter)
-
-  /**
-   * rettuns available commands.
-   *
-   * @param pen Writer object
-   */
-  public static void availableCommands(PrintWriter pen) {
-    pen.println(
-        """
-        Please enter one of the available commands
-        Y representing the row and X a column
-        * flag x y: puts a flag on the field(possible mine)
-        * unflag x y: puts a flag on the field
-        * reset: resets the game
-        * reveal x y: uncvovers the hidden feild
         """);
   } // printInstructions(PrintWriter)
 
@@ -177,7 +155,7 @@ public class Minesweeper {
       for (int j = 0; j < this.column; j++) {
         if (this.grid.get(i, j) == BOMB) {
           continue; // Skip mines
-        }
+        } // if
         int mineCount = 0;
         // Check all adjacent cells (8 directions)
         for (int m = -1; m <= 1; m++) {
@@ -226,7 +204,7 @@ public class Minesweeper {
         for (int j = -1; j <= 1; j++) {
           if (y + i >= 0 && y + i < this.rows && x + j >= 0 && x + j < this.column) {
             revealingCell(y + i, x + j, pen);
-          }
+          } // if
         } // inner for loop
       } // outer for loop
     } // if
@@ -258,7 +236,11 @@ public class Minesweeper {
     this.flagged.set(y, x, false);
   } // unFlagCell(int, int)
 
-  /** The game checks if all non-mine cells are revealed, in which case the player wins. */
+  /**
+   * The game checks if all non-mine cells are revealed, in which case the player wins.
+   *
+   * @return if all of the bomb were revelead return true
+   */
   public boolean checkWin() {
     for (int i = 0; i < this.rows; i++) {
       for (int j = 0; j < this.column; j++) {
@@ -280,26 +262,34 @@ public class Minesweeper {
   } // resetGame()
 
   /**
-   * Displays the mine field. H is hidden values, and F if the cells is flagged
+   * Displays the mine field. H is hidden values, and F if the cells is flagged.
+   *
+   * @param pen Printwriter object
    */
-  public void displayGrid() {
+  public void displayGrid(PrintWriter pen) {
+    pen.print("  ");
+    for (int j = 0; j < this.column; j++) {
+        pen.print(j + 1 + " ");  // Print column index
+    }
+    pen.println();
     for (int i = 0; i < this.rows; i++) {
+      pen.print(i + 1 + " ");
       for (int j = 0; j < this.column; j++) {
         if (this.revealed.get(i, j)) {
           if (this.grid.get(i, j) == BOMB) {
-            System.out.print("X "); // Represent mine with "X"
+            pen.print("X "); // Represent mine with "X"
           } else {
-            System.out.print(this.grid.get(i, j) + " "); // Show adjacent mine count
+            pen.print(this.grid.get(i, j) + " "); // Show adjacent mine count
           } // if
         } else if (this.flagged.get(i, j)) {
-          System.out.print("F "); // Flagged cell
+          pen.print("F "); // Flagged cell
         } else {
-          System.out.print("H "); // Hidden cell
+          pen.print("H "); // Hidden cell
         } // if
       } // inner for loop
-      System.out.println();
+      pen.println();
     } // outer for loop
-  }
+  } //displayGrid(PrintWriter)
 
   // +------+--------------------------------------------------------
   // | Main |
@@ -322,16 +312,15 @@ public class Minesweeper {
     } catch (Exception e) {
       // do nothing
     } // try/catch
-
-    if (!mode.equals("Easy") && !mode.equals("Medium") && !mode.equals("Hard")) {
+    mode.toLowerCase();
+    if (!mode.equals("easy") && !mode.equals("medium") && !mode.equals("hard")) {
       pen.println("Invalid input selected! Easy mode selected automatically!");
-      mode = "Easy";
+      mode = "easy";
     } // if
 
     Minesweeper game = new Minesweeper(mode);
-
     while (!game.checkWin()) {
-      game.displayGrid(); // Display the grid before the move
+      game.displayGrid(pen); // Display the grid before the move
       pen.println("Enter command: ");
       String command = "";
       try {
@@ -341,11 +330,21 @@ public class Minesweeper {
       } // try/catch
 
       String[] parts = command.split(" ");
-      if (parts.length < 3) continue;
+      if (parts.length == 1 && parts[0].equals("end")) {
+        pen.println("Thanks for playing my game");
+        return;
+      } else if (parts.length < 3) {
+        pen.println("Invalid number of commands");
+        continue;
+      } // if
 
       String action = parts[0];
-      int x = Integer.parseInt(parts[1]);
-      int y = Integer.parseInt(parts[2]);
+      int y = Integer.parseInt(parts[1]) - 1;
+      int x = Integer.parseInt(parts[2]) - 1;
+      if (x < 0 || x >= game.column || y < 0 || y >= game.rows) {
+        pen.println("Range is out of the mine field!");
+        continue;
+      } //if
 
       switch (action.toLowerCase()) {
         case "flag":
@@ -360,14 +359,11 @@ public class Minesweeper {
         case "reset":
           game.resetGame();
           break;
-        case "end":
-          return;
         default:
-          System.out.println("Invalid command. Try again!");
+          pen.println("Invalid command. Try again!");
           break;
       } // switch
     } // while
-
-    System.out.println("You win!");
+    pen.println("You win!");
   } // main(String[])
 } // Minesweeper
