@@ -56,6 +56,19 @@ public class DisplayUpdater {
    * The height of the row being used.
    */
   int height;
+  /**
+   * The number of flags the user has placed so far.
+   */
+  int flagsPlaced = 0;
+  /**
+   * The number of Bins the user has checked so far.
+   */
+  int checkedBins = 0;
+
+    /**
+   * The number of mines the game mode selected
+   */
+  int numberOfMines;
 /**
  * the matrix generated and updated by this object in order to keep track of what to display.
  */
@@ -72,7 +85,9 @@ public class DisplayUpdater {
    * DisplayUpdator Constructor, to make an object to keep track of what the user has seen.
    * @param givenMatrix the reference to check against
    */
-  public DisplayUpdater(Matrix<Integer> givenMatrix) {
+  public DisplayUpdater(Matrix<Integer> givenMatrix,  int mines) {
+    this.numberOfMines = mines;
+    
     this.reference = givenMatrix.clone();
     this.width = givenMatrix.width();
     this.height = givenMatrix.height();
@@ -112,6 +127,7 @@ public class DisplayUpdater {
   private void updateEmpty(int r, int c) {
     this.display.set(r, c, DisplayVals.EMPTY);
 
+
   } //updateEmpty(int,int)
 
   /**
@@ -120,13 +136,19 @@ public class DisplayUpdater {
    * @param c column checked
    */
   private void updateMine(int r, int c) {
-    //STUB
     this.display.set(r, c, DisplayVals.MINE); // printing is done
-    // this.print();
+    this.print();
 
-    //Should simply call a function for the end of the game.
 
   } // updateMine(int,int)
+
+
+  public boolean checkWin() {
+    return((this.checkedBins + this.numberOfMines) >= (this.width*this.height));
+  } // updateMine(int,int)
+
+
+
 
 
 
@@ -142,29 +164,52 @@ public class DisplayUpdater {
     int c = (int) col - (int) 'a';
     if (this.display.get(r, c) == DisplayVals.UNCHECKED) {
       this.display.set(r, c, DisplayVals.FLAG);
+      this.flagsPlaced++;
     } // check if it is currently a valid place to do place a flag, otherwise do nothing
-    this.print();
+    
+  } //flag(int,int)
+
+
+  public void unflag(int r, char col) {
+    int c = (int) col - (int) 'a';
+    if (this.display.get(r, c) == DisplayVals.FLAG) {
+      this.display.set(r, c, DisplayVals.UNCHECKED);
+      this.flagsPlaced--;
+    } // check if it is currently a valid place to do place a flag, otherwise do nothing
+   
   } //flag(int,int)
 /**
  * checks the given index for a mine.
  * @param r row to check
  * @param col column to check
  */
-  public void checkIndex(int r, char col) {
+  public int checkIndex(int r, char col) {
     int c = (int) col - (int) 'a';
     int value = this.reference.get(r, c).intValue();
     if (this.display.get(r, c) == DisplayVals.UNCHECKED) {
+      this.checkedBins++;
       if (value == -1) {
         this.updateMine(r, c);
+        return (0);
       } // runs function to update the position with a mine
 
       if (value == 0) {
         this.updateEmpty(r, c);
+        return (-1);
       } //runs function to update the empty position
 
       if (value > 0) {
         this.updateNumber(r, c);
+        return (1);
       } // runs function to update nu,ber
+            
+      else  {
+        return (1);
+      }
+      } // runs function to update nu,ber
+      
+      else  {
+        return (1);
 
     } // ensures that any index we check has not been checked before
 
@@ -235,8 +280,11 @@ public class DisplayUpdater {
 
 
     AsciiBlock.print(pen, asciiDisplay);
+    pen.println("this many unflagged mines remain:" + (this.numberOfMines - this.flagsPlaced));
     //finish up and print
 
   } //print()
+
+  
 
 } // end of class

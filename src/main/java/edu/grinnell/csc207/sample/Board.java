@@ -56,7 +56,6 @@ public class Board {
     while (mines != 0) {
       int r = (int) (Math.random() * h);
       int c = (int) (Math.random() * w);
-      System.out.printf("%d:%d\n", r, c);
 
       if (matrix.get(r, c).intValue() != -1) {
         mines--;
@@ -65,7 +64,6 @@ public class Board {
 
       }
     }
-    System.out.printf("Made it out\n");
 
     for (int i = 0; i < h; i++) {
       for (int j = 0; j < w; j++) {
