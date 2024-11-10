@@ -1,19 +1,9 @@
 package edu.grinnell.csc207.sample;
 
-//import edu.grinnell.csc207.minesweeper.displayUpdater;
-import edu.grinnell.csc207.util.ArrayUtils;
-import edu.grinnell.csc207.util.IOUtils;
+// import edu.grinnell.csc207.minesweeper.displayUpdater;
 import edu.grinnell.csc207.util.Matrix;
 import edu.grinnell.csc207.util.MatrixV0;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.IOException;
 import java.io.PrintWriter;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
 
 public class Board {
 
@@ -23,7 +13,6 @@ public class Board {
   public void initializeBoard(int w, int h) {
 
     matrix = new MatrixV0<Integer>(h, w, Integer.valueOf(0));
-
   }
 
   public int mineCounter(int r, int c) {
@@ -61,7 +50,6 @@ public class Board {
         mines--;
         System.out.printf("%d\n", mines);
         matrix.set(r, c, Integer.valueOf(-1));
-
       }
     }
 
@@ -76,7 +64,6 @@ public class Board {
     PrintWriter pen = new PrintWriter(System.out, true);
     Board minesweeper = new Board(14, 18, 40);
 
-
     // displayUpdater display = new displayUpdater(minesweeper.matrix);
     // display.print();
 
@@ -90,5 +77,4 @@ public class Board {
     // display.checkIndex(5, 'c');
 
   }
-
 }
