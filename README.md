@@ -4,13 +4,16 @@ A mini-project for Grinnell's CSC-207.
 
 Authors:
 
-* Your Name Here
-* Your Name Here
+* Alex Cyphers
+* Jana Vadillo
+* Koast Tsymbal
 * Samuel A. Rebelsky (Starter code)
 
 Instructions:
 
-* **Please add instructions for running the game**
+The instructions are listed when you open the program where it explains the game and that you can choose the difficulty for
+minesweeper (easy, medium, or hard). Your goal is to flag all the possible mines on the field. Y representing the row number
+and X a column. You can follow the list of commands to know how to place the flags and reveal a field.
 
 Acknowledgements:
 
