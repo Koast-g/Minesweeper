@@ -1,4 +1,4 @@
-# Abstract games
+# Minesweeper games
 
 A mini-project for Grinnell's CSC-207.
 
@@ -18,5 +18,5 @@ and X a column. You can follow the list of commands to know how to place the fla
 Acknowledgements:
 
 Source:
-
-This code may be found at <URL>. It is based on code found at <https://github.com/Grinnell-CSC207/mp-games-maven>.
+Used Matrix code ans AsciiBlock code. Starter code was written by Samuel A. Reblsky. It may be found at AsciiBlocks: <https://github.com/Grinnell-CSC207/mp-blocks-maven> and MatrixV0: <https://github.com/Grinnell-CSC207/mp-matrices-maven>
+This code may be found at <https://github.com/Koast-g/Minesweeper.git>. It is based on code found at <https://github.com/Grinnell-CSC207/mp-games-maven>.
