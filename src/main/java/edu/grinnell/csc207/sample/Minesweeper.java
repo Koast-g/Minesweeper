@@ -6,7 +6,13 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.Random;
 
-/** This is a one player game Minesweeper. Try to escape the mine field in order to survive. */
+/**
+ * This is a one player game Minesweeper. Try to escape the mine field in order to survive.
+ *
+ * @author Alex Cyphers
+ * @author Jana Vadillo
+ * @author Koast Tsymbal
+ */
 public class Minesweeper {
   // +-----------+---------------------------------------------------
   // | Constants |
@@ -119,11 +125,11 @@ public class Minesweeper {
         * Hard - creates a 24 by 24 board
 
         Your goal is to flag all the possible mines on the field.
-        y representing the row number and X a column
+        y representing the row number and letter represents a column
 
-        * flag y x: puts a flag on the field(possible mine)
-        * unflag yx: puts a flag on the field(possible mine)
-        * reveal yx: uncvovers the hidden feild
+        * flag y letter: puts a flag on the field(possible mine)
+        * unflag y letter: puts a flag on the field(possible mine)
+        * reveal y letter: uncvovers the hidden feild
         * end : ends the game
         """);
   } // printInstructions(PrintWriter)
@@ -267,13 +273,17 @@ public class Minesweeper {
    * @param pen Printwriter object
    */
   public void displayGrid(PrintWriter pen) {
-    pen.print("  ");
+    pen.print("   ");
     for (int j = 0; j < this.column; j++) {
-        pen.print(j + 1 + " ");  // Print column index
-    }
+      pen.print(int2letter(j) + " ");
+    } // for
     pen.println();
     for (int i = 0; i < this.rows; i++) {
-      pen.print(i + 1 + " ");
+      if (i + 1 < 10) {
+        pen.print(i + 1 + "  ");
+      } else {
+        pen.print(i + 1 + " ");
+      } // Print column index
       for (int j = 0; j < this.column; j++) {
         if (this.revealed.get(i, j)) {
           if (this.grid.get(i, j) == BOMB) {
@@ -289,7 +299,34 @@ public class Minesweeper {
       } // inner for loop
       pen.println();
     } // outer for loop
-  } //displayGrid(PrintWriter)
+  } // displayGrid(PrintWriter)
+
+  // +----------------+----------------------------------------------
+  // | Helper methods |
+  // +----------------+
+  /**
+   * Converts a leter into in integer.
+   *
+   * @param letter character in ASCII
+   * @return it return an integer for coresponding letter between [0, 25]
+   */
+  public static int letter2int(char letter) {
+    int base = (int) 'a'; // setting character "a" as a base
+    int code = (int) (letter - base); // letter integer code
+    return code;
+  } // letter2int(char letter)
+
+  /**
+   * converts letter to an integer.
+   *
+   * @param i an integer for coresponding letter
+   * @return character for coresponding integer (addig base to an integer)
+   */
+  public static char int2letter(int i) {
+    int base = (int) 'a'; // setting character "a" as a base
+    char code = (char) (i + base); // integer code to letter
+    return code;
+  } // int2letter(int i)
 
   // +------+--------------------------------------------------------
   // | Main |
@@ -312,7 +349,7 @@ public class Minesweeper {
     } catch (Exception e) {
       // do nothing
     } // try/catch
-    mode.toLowerCase();
+    mode = mode.toLowerCase();
     if (!mode.equals("easy") && !mode.equals("medium") && !mode.equals("hard")) {
       pen.println("Invalid input selected! Easy mode selected automatically!");
       mode = "easy";
@@ -340,11 +377,11 @@ public class Minesweeper {
 
       String action = parts[0];
       int y = Integer.parseInt(parts[1]) - 1;
-      int x = Integer.parseInt(parts[2]) - 1;
+      int x = letter2int(parts[2].charAt(0));
       if (x < 0 || x >= game.column || y < 0 || y >= game.rows) {
         pen.println("Range is out of the mine field!");
         continue;
-      } //if
+      } // if
 
       switch (action.toLowerCase()) {
         case "flag":
